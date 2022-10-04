@@ -1,24 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import Basket from "./components/Basket";
+import Products from "./components/Products";
+import useCartReducer from "./hooks/useCartReducer";
+import { sampleData } from "./sampleData";
+import { useContext, createContext } from "react";
+
+interface IBasket {
+  addProduct: Function;
+  removeProduct: Function;
+  removeAllProducts: Function;
+  submitCart: Function;
+  state: any;
+}
+// export const BasketContext = React.createContext<IBasket>({} as IBasket);
+export const BasketContext = createContext<IBasket>({} as IBasket);
 
 function App() {
+  const basketController = useCartReducer();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div>
+        <BasketContext.Provider value={basketController}>
+          <h1>SHOP</h1>
+          <h2>Basket</h2>
+          <Basket />
+          <h2>Products</h2>
+          <Products data={sampleData} />
+        </BasketContext.Provider>
+      </div>
     </div>
   );
 }
