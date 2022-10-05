@@ -8,6 +8,9 @@ export default function Basket() {
   console.log(basketController.state);
 
   const products = basketController.state.basketContent;
+  const isBasketEmpty = basketController.state.basketContent.length === 0;
+  console.log(isBasketEmpty);
+
   console.log("BASKET PRODUCTS");
   console.log(products);
   return (
@@ -18,6 +21,13 @@ export default function Basket() {
           <div>{item.quantity}</div>
         </div>
       ))}
+      {isBasketEmpty ? (
+        ""
+      ) : (
+        <button onClick={() => basketController.removeAllProducts()}>
+          Remove All
+        </button>
+      )}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { BasketContext } from "../App";
 import React, { useContext, useState } from "react";
 
 export default function Products({ data }: any) {
-  const [productData, setProductData] = useState(data);
+  const productData = data;
 
   const basketController = useContext(BasketContext);
 
@@ -29,18 +29,25 @@ export default function Products({ data }: any) {
           {basketController.state.basketContent.some(
             (element: any) => element.id === item.id
           ) === true ? (
-            <button
-              onClick={() => {
-                console.log("fired");
-                console.log(item);
-                basketController.removeProduct(item);
-              }}
-            >
-              Remove
-            </button>
+            <div>
+              <button
+                onClick={() => {
+                  console.log("fired");
+                  console.log(item);
+                  basketController.removeProduct(item);
+                }}
+              >
+                Remove
+              </button>
+              {item.stock ===
+                basketController.state.basketContent.find(
+                  (el: any) => el.id === item.id
+                ).quantity && <div>Max Quantity</div>}
+            </div>
           ) : (
             ""
           )}
+          <div>{}</div>
         </div>
       ))}
     </div>

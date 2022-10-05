@@ -13,14 +13,15 @@ interface IBasket {
 
 export default function useCartReducer() {
   const reducer = (state: any, action: any) => {
-    const newProduct = action.product;
-    const isInBasket = state.basketContent.some(
-      (elem: any) => elem.id === newProduct.id
-    );
+    const isBasketEmpty = state.basketContent.length === 0;
 
     switch (action.type) {
       case "add":
         // Check if not in basket
+        const newProduct = action.product;
+        const isInBasket = state.basketContent.some(
+          (elem: any) => elem.id === newProduct.id
+        );
         if (!isInBasket)
           return {
             basketContent: [
@@ -39,6 +40,7 @@ export default function useCartReducer() {
         console.log("BASKET QTY");
         console.log(productQuantityInBasket);
 
+        // else add quantity
         return {
           basketContent: state.basketContent.map((item: any) => {
             if (item.id === newProduct.id) {
@@ -51,15 +53,31 @@ export default function useCartReducer() {
 
       case "remove":
         // Check if not in basket
-        if (!isInBasket) return state;
 
+        // ?????
+        // the same variables that can't be moved up - undefined when resetting the state
+        // --> when resetting state no action.product being passed
+        const targetProduct = action.product;
+        const isProductInBasket = state.basketContent.some(
+          // ?????
+          // ?????
+          (elem: any) => elem.id === newProduct.id
+        );
+        if (!isProductInBasket) return state;
+
+        // if current basket quantity is 1 remove it from basket after decreasing quantity
         if (
           state.basketContent.filter(
-            (elem: any) => elem.id === newProduct.id
-          )[0].quantity === 0
-        )
-          return state;
+            (elem: any) => elem.id === targetProduct.id
+          )[0].quantity === 1
+        ) {
+          const filteredState = state.basketContent.filter(
+            (item: any) => item.id !== targetProduct.id
+          );
+          return { ...state, basketContent: filteredState };
+        }
 
+        // else handle decreasing quantity by 1
         return {
           basketContent: state.basketContent.map((item: any) => {
             if (item.id === newProduct.id) {
@@ -69,6 +87,11 @@ export default function useCartReducer() {
             return item;
           }),
         };
+
+      case "remove_all":
+        if (isBasketEmpty) return state;
+
+        return initialState;
 
       default:
         return state;
@@ -83,7 +106,10 @@ export default function useCartReducer() {
 
   const removeProduct = (product: any) =>
     dispatch({ type: "remove", product: product });
-  const removeAllProducts = () => "";
+
+  const removeAllProducts = () => {
+    dispatch({ type: "remove_all" });
+  };
   const submitCart = () => "";
 
   return { addProduct, removeProduct, removeAllProducts, submitCart, state };
