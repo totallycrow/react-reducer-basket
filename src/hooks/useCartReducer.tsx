@@ -11,11 +11,35 @@ interface IBasket {
   basketContent: Array<IBasketContent>;
 }
 
+// const handlers = {
+//   "add": addhandler
+// }
+
+// type action = (payload) => IState
+
+// redux-toolkit -> slice
+
 export default function useCartReducer() {
   const reducer = (state: any, action: any) => {
     const isBasketEmpty = state.basketContent.length === 0;
 
+    // spread <-------------
     switch (action.type) {
+      // "updateCart" // add / remove qty
+      // product Id
+      // quantity 1 -1
+
+      // if qty === 1 && payload.qty === -1
+      // remove from basket
+
+      // state.basket [{ id, qty }]
+      // state.products [] <--
+      // state.currentProduct <--- /products/:id
+
+      // product.qty += action.payload.qty
+
+      // remove from cart
+
       case "add":
         // Check if not in basket
         const newProduct = action.product;
@@ -24,6 +48,8 @@ export default function useCartReducer() {
         );
         if (!isInBasket)
           return {
+            // immer.js
+            ...state,
             basketContent: [
               ...state.basketContent,
               { ...action.product, quantity: 1 },

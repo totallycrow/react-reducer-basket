@@ -15,7 +15,15 @@ interface IBasket {
   state: any;
 }
 // export const BasketContext = React.createContext<IBasket>({} as IBasket);
-export const BasketContext = createContext<IBasket>({} as IBasket);
+
+// defensive programming
+export const BasketContext = createContext<IBasket>({
+  addProduct: () => {},
+  removeProduct: () => {},
+  removeAllProducts: () => {},
+  submitCart: () => {},
+  state: {},
+});
 
 function App() {
   const basketController = useCartReducer();
