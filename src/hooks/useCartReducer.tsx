@@ -5,6 +5,7 @@ interface IBasketContent {
   name: string;
   price: number;
   quantity: number;
+  qty: number;
 }
 
 interface IBasket {
@@ -22,27 +23,12 @@ interface IBasket {
 export default function useCartReducer() {
   const reducer = (state: any, action: any) => {
     const isBasketEmpty = state.basketContent.length === 0;
+    const newProduct = action.product;
+    const qtyChange = action.qty;
 
     // spread <-------------
     switch (action.type) {
-      // "updateCart" // add / remove qty
-      // product Id
-      // quantity 1 -1
-
-      // if qty === 1 && payload.qty === -1
-      // remove from basket
-
-      // state.basket [{ id, qty }]
-      // state.products [] <--
-      // state.currentProduct <--- /products/:id
-
-      // product.qty += action.payload.qty
-
-      // remove from cart
-
-      case "add":
-        // Check if not in basket
-        const newProduct = action.product;
+      case "updateCart":
         const isInBasket = state.basketContent.some(
           (elem: any) => elem.id === newProduct.id
         );
@@ -61,53 +47,28 @@ export default function useCartReducer() {
           (elem: any) => elem.id === newProduct.id
         )[0].quantity;
 
-        if (productQuantityInBasket >= newProduct.stock) return state;
+        if (productQuantityInBasket >= newProduct.stock && qtyChange === 1)
+          return state;
 
-        console.log("BASKET QTY");
-        console.log(productQuantityInBasket);
-
-        // else add quantity
-        return {
-          basketContent: state.basketContent.map((item: any) => {
-            if (item.id === newProduct.id) {
-              const newQuantity = item.quantity + 1;
-              return { ...item, quantity: newQuantity };
-            }
-            return item;
-          }),
-        };
-
-      case "remove":
-        // Check if not in basket
-
-        // ?????
-        // the same variables that can't be moved up - undefined when resetting the state
-        // --> when resetting state no action.product being passed
-        const targetProduct = action.product;
-        const isProductInBasket = state.basketContent.some(
-          // ?????
-          // ?????
-          (elem: any) => elem.id === newProduct.id
-        );
-        if (!isProductInBasket) return state;
+        // else update quantity
 
         // if current basket quantity is 1 remove it from basket after decreasing quantity
         if (
           state.basketContent.filter(
-            (elem: any) => elem.id === targetProduct.id
-          )[0].quantity === 1
+            (elem: any) => elem.id === newProduct.id
+          )[0].quantity === 1 &&
+          qtyChange === -1
         ) {
           const filteredState = state.basketContent.filter(
-            (item: any) => item.id !== targetProduct.id
+            (item: any) => item.id !== newProduct.id
           );
           return { ...state, basketContent: filteredState };
         }
 
-        // else handle decreasing quantity by 1
         return {
           basketContent: state.basketContent.map((item: any) => {
             if (item.id === newProduct.id) {
-              const newQuantity = item.quantity - 1;
+              const newQuantity = item.quantity + qtyChange;
               return { ...item, quantity: newQuantity };
             }
             return item;
@@ -138,5 +99,16 @@ export default function useCartReducer() {
   };
   const submitCart = () => "";
 
-  return { addProduct, removeProduct, removeAllProducts, submitCart, state };
+  const updateBasket = (product: any, newQty: number) => {
+    dispatch({ type: "updateCart", product: product, qty: newQty });
+  };
+
+  return {
+    addProduct,
+    removeProduct,
+    removeAllProducts,
+    submitCart,
+    updateBasket,
+    state,
+  };
 }

@@ -20,7 +20,7 @@ export default function Products({ data }: any) {
             onClick={() => {
               console.log("fired");
               console.log(item);
-              basketController.addProduct(item);
+              basketController.updateBasket(item, 1);
             }}
           >
             add to cart
@@ -34,7 +34,7 @@ export default function Products({ data }: any) {
                 onClick={() => {
                   console.log("fired");
                   console.log(item);
-                  basketController.removeProduct(item);
+                  basketController.updateBasket(item, -1);
                 }}
               >
                 Remove

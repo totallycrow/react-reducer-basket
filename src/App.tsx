@@ -12,6 +12,7 @@ interface IBasket {
   removeProduct: Function;
   removeAllProducts: Function;
   submitCart: Function;
+  updateBasket: Function;
   state: any;
 }
 // export const BasketContext = React.createContext<IBasket>({} as IBasket);
@@ -22,6 +23,7 @@ export const BasketContext = createContext<IBasket>({
   removeProduct: () => {},
   removeAllProducts: () => {},
   submitCart: () => {},
+  updateBasket: () => {},
   state: {},
 });
 
