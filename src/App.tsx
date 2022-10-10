@@ -6,28 +6,43 @@ import Products from "./components/Products";
 import useCartReducer from "./hooks/useCartReducer";
 import { sampleData } from "./sampleData";
 import { useContext, createContext } from "react";
+import {
+  IBasketContent,
+  IBasketContext,
+  IBasketState,
+  IProductItem,
+} from "./hooks/useCartReducer";
 
-interface IBasket {
-  addProduct: Function;
-  removeProduct: Function;
-  removeAllProducts: Function;
-  submitCart: Function;
-  updateBasket: Function;
-  state: any;
-}
+// interface IBasket {
+//   addProduct: Function;
+//   removeProduct: Function;
+//   removeAllProducts: Function;
+//   submitCart: Function;
+//   updateBasket: Function;
+//   state: any;
+// }
+
+// interface IBasketState {
+
+// }
+
 // export const BasketContext = React.createContext<IBasket>({} as IBasket);
 
-// defensive programming
-export const BasketContext = createContext<IBasket>({
-  addProduct: () => {},
-  removeProduct: () => {},
-  removeAllProducts: () => {},
-  submitCart: () => {},
-  updateBasket: () => {},
-  state: {},
-});
+// // defensive programming
+// export const BasketContext = createContext<IBasketContext>({
+//   addProduct: (item: IProductItem) => {},
+//   removeProduct: () => {},
+//   removeAllProducts: () => {},
+//   submitCart: () => {},
 
+//   // how to type return object of type??
+//   updateBasket: (item: IProductItem, newQty: number) => {},
+//   state: {} as IBasketState,
+// });
+
+export const BasketContext = createContext<IBasketContext | null>(null);
 function App() {
+  console.log(sampleData);
   const basketController = useCartReducer();
 
   return (

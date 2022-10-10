@@ -1,9 +1,11 @@
 import React, { useContext } from "react";
-import useCartReducer from "../hooks/useCartReducer";
+import useCartReducer, { IBasketContent } from "../hooks/useCartReducer";
 import { BasketContext } from "../App";
 
 export default function Basket() {
   const basketController = useContext(BasketContext);
+
+  if (!basketController) return <div>Basket</div>;
 
   console.log(basketController.state);
 
@@ -15,7 +17,7 @@ export default function Basket() {
   console.log(products);
   return (
     <div>
-      {products.map((item: any) => (
+      {products.map((item: IBasketContent) => (
         <div>
           <div>{item.name}</div>
           <div>{item.quantity}</div>

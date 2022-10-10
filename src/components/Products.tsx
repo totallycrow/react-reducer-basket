@@ -1,21 +1,34 @@
 import ProductCart from "./ProductCart";
 import { BasketContext } from "../App";
+import {
+  IBasketContent,
+  IBasketContext,
+  IBasketState,
+  IProductItem,
+} from "../hooks/useCartReducer";
 
 import React, { useContext, useState } from "react";
 
-export default function Products({ data }: any) {
+interface IPropsData {
+  data: Array<IProductItem>;
+}
+
+export default function Products({ data }: IPropsData) {
+  console.log("Products Component fired");
+  console.log(data);
   const productData = data;
 
   const basketController = useContext(BasketContext);
+  if (!basketController) return <div>Product List</div>;
 
   return (
     <div>
       <div></div>
-      {productData.map((item: any) => (
+      {productData.map((item: IProductItem) => (
         <div>
           <div>{item.name}</div>
           <div>{item.price}</div>
-          <div>{item.stock}</div>
+          <div>{item.quantity}</div>
           <button
             onClick={() => {
               console.log("fired");
@@ -27,7 +40,7 @@ export default function Products({ data }: any) {
           </button>
 
           {basketController.state.basketContent.some(
-            (element: any) => element.id === item.id
+            (element: IBasketContent) => element.id === item.id
           ) === true ? (
             <div>
               <button
@@ -39,10 +52,10 @@ export default function Products({ data }: any) {
               >
                 Remove
               </button>
-              {item.stock ===
+              {item.quantity ===
                 basketController.state.basketContent.find(
-                  (el: any) => el.id === item.id
-                ).quantity && <div>Max Quantity</div>}
+                  (el: IBasketContent) => el.id === item.id
+                )?.quantity && <div>Max Quantity</div>}
             </div>
           ) : (
             ""
