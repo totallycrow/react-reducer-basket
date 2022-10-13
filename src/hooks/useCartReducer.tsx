@@ -7,16 +7,15 @@ import {
   IProductItem,
 } from "../types/types";
 
-// const handlers = {
-//   "add": addhandler
-// }
-
-// type action = (payload) => IState
-
-// redux-toolkit -> slice
-
+// ******************* Consts *********************
 const initialState: IBasketState = { basketContent: [] };
 
+const cartCommands = {
+  UPDATE_CART: "updateCart",
+  REMOVE_ALL: "remove_all",
+};
+
+// ******************* Reducer *********************
 const reducer = (
   state: IBasketState = initialState,
   action: IAction
@@ -24,46 +23,39 @@ const reducer = (
   const isBasketEmpty = state.basketContent.length === 0;
   const newProduct = action.product;
   const qtyChange = action.qty;
+  const { UPDATE_CART, REMOVE_ALL } = cartCommands;
 
-  // spread <-------------
   switch (action.type) {
-    case "updateCart":
-      const isInBasket = state.basketContent.some(
+    case UPDATE_CART:
+      const productInBasket = state.basketContent.filter(
         (elem: IBasketContent) => elem.id === newProduct.id
-      );
-      if (!isInBasket)
+      )[0];
+
+      if (!productInBasket)
         return {
           // immer.js
           ...state,
-          basketContent: [{ ...action.product, quantity: 1 }],
+          basketContent: [
+            ...state.basketContent,
+            { ...action.product, quantity: 1 },
+          ],
         };
 
-      // bigOnotation  n * 4  / space1
-      // state.basketContent.length * 4
-
       //   Check if not exceeding stock
-      const productQuantityInBasket = state.basketContent.filter(
-        (elem: IBasketContent) => elem.id === newProduct.id
-      )[0].quantity;
+      const productQuantityInBasket = productInBasket.quantity;
 
       if (productQuantityInBasket >= newProduct.quantity && qtyChange === 1)
         return state;
 
-      // else update quantity
-
       // if current basket quantity is 1 remove it from basket after decreasing quantity
-      if (
-        state.basketContent.filter(
-          (elem: IBasketContent) => elem.id === newProduct.id
-        )[0].quantity === 1 &&
-        qtyChange === -1
-      ) {
+      if (productQuantityInBasket === 1 && qtyChange === -1) {
         const filteredState = state.basketContent.filter(
           (item: IBasketContent) => item.id !== newProduct.id
         );
         return { ...state, basketContent: filteredState };
       }
 
+      // Handle selected item quantity change
       return {
         basketContent: state.basketContent.map((item: IBasketContent) => {
           if (item.id === newProduct.id) {
@@ -74,7 +66,7 @@ const reducer = (
         }),
       };
 
-    case "remove_all":
+    case REMOVE_ALL:
       if (isBasketEmpty) return state;
 
       return initialState;
@@ -84,24 +76,29 @@ const reducer = (
   }
 };
 
+// ******************* USEREDUCER *********************
 export default function useCartReducer() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const removeAllProducts = () => {
-    dispatch({
-      type: "remove_all",
-      product: { id: 0, price: 0, quantity: 0, name: "" },
-      qty: 0,
-    });
-  };
-
-  const updateBasket = (product: any, newQty: number) => {
-    dispatch({ type: "updateCart", product: product, qty: newQty });
+  const cartActions = {
+    removeAllProducts: () => {
+      dispatch({
+        type: cartCommands.REMOVE_ALL,
+        product: { id: 0, price: 0, quantity: 0, name: "" },
+        qty: 0,
+      });
+    },
+    updateBasket: (product: IProductItem, newQty: number) => {
+      dispatch({
+        type: cartCommands.UPDATE_CART,
+        product: product,
+        qty: newQty,
+      });
+    },
   };
 
   return {
-    removeAllProducts,
-    updateBasket,
+    cartActions,
     state,
   };
 }

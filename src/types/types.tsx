@@ -17,8 +17,10 @@ export interface IBasketState {
 }
 
 export interface IBasketContext {
-  removeAllProducts: Function;
-  updateBasket: Function;
+  cartActions: {
+    removeAllProducts: any;
+    updateBasket: any;
+  };
   state: IBasketState;
 }
 

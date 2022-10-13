@@ -26,7 +26,9 @@ export default function Basket() {
       {isBasketEmpty ? (
         ""
       ) : (
-        <button onClick={() => basketController.removeAllProducts()}>
+        <button
+          onClick={() => basketController.cartActions.removeAllProducts()}
+        >
           Remove All
         </button>
       )}

@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+
 import { BasketContext } from "../App";
 import {
   IBasketContent,
@@ -31,7 +32,7 @@ export default function Products({ data }: IPropsData) {
             onClick={() => {
               console.log("fired");
               console.log(item);
-              basketController.updateBasket(item, 1);
+              basketController.cartActions.updateBasket(item, 1);
             }}
           >
             add to cart
@@ -45,7 +46,7 @@ export default function Products({ data }: IPropsData) {
                 onClick={() => {
                   console.log("fired");
                   console.log(item);
-                  basketController.updateBasket(item, -1);
+                  basketController.cartActions.updateBasket(item, -1);
                 }}
               >
                 Remove
