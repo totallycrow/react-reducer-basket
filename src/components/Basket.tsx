@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import useCartReducer, { IBasketContent } from "../hooks/useCartReducer";
+import { IBasketContent } from "../types/types";
 import { BasketContext } from "../App";
 
 export default function Basket() {

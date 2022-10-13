@@ -11,34 +11,7 @@ import {
   IBasketContext,
   IBasketState,
   IProductItem,
-} from "./hooks/useCartReducer";
-
-// interface IBasket {
-//   addProduct: Function;
-//   removeProduct: Function;
-//   removeAllProducts: Function;
-//   submitCart: Function;
-//   updateBasket: Function;
-//   state: any;
-// }
-
-// interface IBasketState {
-
-// }
-
-// export const BasketContext = React.createContext<IBasket>({} as IBasket);
-
-// // defensive programming
-// export const BasketContext = createContext<IBasketContext>({
-//   addProduct: (item: IProductItem) => {},
-//   removeProduct: () => {},
-//   removeAllProducts: () => {},
-//   submitCart: () => {},
-
-//   // how to type return object of type??
-//   updateBasket: (item: IProductItem, newQty: number) => {},
-//   state: {} as IBasketState,
-// });
+} from "./types/types";
 
 export const BasketContext = createContext<IBasketContext | null>(null);
 function App() {

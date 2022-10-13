@@ -1,13 +1,11 @@
-import ProductCart from "./ProductCart";
+import React, { useContext } from "react";
 import { BasketContext } from "../App";
 import {
   IBasketContent,
   IBasketContext,
   IBasketState,
   IProductItem,
-} from "../hooks/useCartReducer";
-
-import React, { useContext, useState } from "react";
+} from "../types/types";
 
 interface IPropsData {
   data: Array<IProductItem>;

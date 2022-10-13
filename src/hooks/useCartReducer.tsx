@@ -1,38 +1,11 @@
 import React, { useReducer } from "react";
-
-export interface IBasketContent {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  qty: number;
-}
-
-export interface IProductItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-}
-
-export interface IBasketState {
-  basketContent: Array<IBasketContent>;
-}
-
-export interface IBasketContext {
-  addProduct: Function;
-  removeProduct: Function;
-  removeAllProducts: Function;
-  submitCart: Function;
-  updateBasket: Function;
-  state: IBasketState;
-}
-
-export interface IAction {
-  type: string;
-  product: IProductItem;
-  qty: number;
-}
+import {
+  IAction,
+  IBasketContent,
+  IBasketContext,
+  IBasketState,
+  IProductItem,
+} from "../types/types";
 
 // const handlers = {
 //   "add": addhandler
@@ -42,7 +15,12 @@ export interface IAction {
 
 // redux-toolkit -> slice
 
-const reducer = (state: IBasketState, action: IAction, initialState) => {
+const initialState: IBasketState = { basketContent: [] };
+
+const reducer = (
+  state: IBasketState = initialState,
+  action: IAction
+): IBasketState => {
   const isBasketEmpty = state.basketContent.length === 0;
   const newProduct = action.product;
   const qtyChange = action.qty;
@@ -57,10 +35,7 @@ const reducer = (state: IBasketState, action: IAction, initialState) => {
         return {
           // immer.js
           ...state,
-          basketContent: [
-            ...state.basketContent,
-            { ...action.product, quantity: 1 },
-          ],
+          basketContent: [{ ...action.product, quantity: 1 }],
         };
 
       // bigOnotation  n * 4  / space1
@@ -109,20 +84,20 @@ const reducer = (state: IBasketState, action: IAction, initialState) => {
   }
 };
 
-const usePrepareCartActions = (dispatch) => {
+export default function useCartReducer() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   const removeAllProducts = () => {
-    dispatch({ type: "REMOVE_ALL" });
+    dispatch({
+      type: "remove_all",
+      product: { id: 0, price: 0, quantity: 0, name: "" },
+      qty: 0,
+    });
   };
 
   const updateBasket = (product: any, newQty: number) => {
     dispatch({ type: "updateCart", product: product, qty: newQty });
   };
-};
-
-export default function useCartReducer() {
-  const initialState = { basketContent: [] };
-
-  const [state, dispatch] = useReducer(reducer, initialState);
 
   return {
     removeAllProducts,
